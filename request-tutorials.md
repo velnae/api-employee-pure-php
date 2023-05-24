@@ -101,9 +101,7 @@ http://localhost:8080/api/tutorials/10
 
 body
 ```json
-{
-    "id":"10"
-}
+
 ```
 
 response

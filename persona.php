@@ -5,6 +5,7 @@ require_once 'public/persona.class.php';
 $_respuestas = new respuestas;
 $_persona = new persona;
 
+    header('Access-Control-Allow-Origin: *');
 if($_SERVER['REQUEST_METHOD'] == "GET"){
     //echo "hola get";
 
