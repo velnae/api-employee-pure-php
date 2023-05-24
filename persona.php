@@ -5,31 +5,27 @@ require_once 'public/persona.class.php';
 $_respuestas = new respuestas;
 $_persona = new persona;
 
-    header('Access-Control-Allow-Origin: *');
+// header('Access-Control-Allow-Origin: *');
+header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+header("Allow: GET, POST, OPTIONS, PUT, DELETE");
+
+
 if($_SERVER['REQUEST_METHOD'] == "GET"){
     //echo "hola get";
+    $id = $_GET['id'];
 
-    if(isset($_GET["page"])){
-        $pagina = $_GET["page"];
-        $size = $_GET["size"];
-        
+    if(!$id){
         $totalPersonas = $_persona->totalPersonas();
-        $listaPersona = $_persona->listaPersona($pagina, $size);
-        $response = [
-            "totalItems" => $totalPersonas,
-            "totalPages" => intval($totalPersonas / 5),
-            "currentPage" => $pagina,
-            "persons" => $listaPersona
-        ];
-
+        $listaPersona = $_persona->listaPersona();
         header("Content-Type: application/json");
-        echo json_encode($response);
+        echo json_encode($listaPersona);
         http_response_code(200);
-    }else if(isset($_GET['id'])){
-        $_personaid = $_GET['id'];
-        $datosPersona = $_persona->obtenerPersona($_personaid);
+    }else{
+        $datosPersona = $_persona->obtenerPersona($id);
+        $persona = $datosPersona ? $datosPersona[0] : []; 
         header("Content-Type: application/json");
-        echo json_encode($datosPersona);
+        echo json_encode($persona);
         http_response_code(200);
     }
 
@@ -87,6 +83,3 @@ if($_SERVER['REQUEST_METHOD'] == "GET"){
     $datosArray = $_respuestas->error_405();
     echo json_encode($datosArray);
 }
-
-
-?>

@@ -22,11 +22,11 @@ class persona extends conexion{
     }
 
     //lista todas las personas con paginacion de 1 a 5
-    public function listaPersona($pagina = 1, $size = 5){
-        $cantidad = $size;
+    public function listaPersona($pagina = 0){
+        $cantidad = 5;
         $inicio = ($pagina) * $cantidad;
 
-        $query = "SELECT ID as id, nombre, apellido, fechanacimiento, dni FROM " . $this->table . " LIMIT $inicio, $cantidad";
+        $query = "SELECT id, nombre, apellido, fechanacimiento, dni FROM " . $this->table;
         $datos = parent::obtenerDatos($query);
         
         return $datos;
@@ -35,8 +35,8 @@ class persona extends conexion{
 
     //muestra los datos de una sola persona
     public function obtenerPersona($id){
-        $query = "SELECT * FROM " . $this->table . " WHERE ID = '$id'";
-        //print_r($query);
+        $query = "SELECT * FROM " . $this->table . " WHERE id = '$id'";
+        // print_r($query);
         //$datos = parent::obtenerDatos($query);
         return parent::obtenerDatos($query);
     }
