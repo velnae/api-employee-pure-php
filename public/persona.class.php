@@ -11,12 +11,22 @@ class persona extends conexion{
     private $dni = ""; //
     
 
-    //lista todas las personas con paginacion de 1 a 5
-    public function listaPersona($pagina = 1){
-        $cantidad = 5;
-        $inicio = ($pagina - 1) * $cantidad;
+    //total personas
+    public function totalPersonas(){
+        $query = "SELECT COUNT(ID) AS total FROM " . $this->table;
+        $datos = parent::obtenerDatos($query);
+        $total = $datos[0]['total'];
 
-        $query = "SELECT ID, nombre, apellido, fechanacimiento, dni FROM " . $this->table . " LIMIT $inicio, $cantidad";
+        return $total;
+        //
+    }
+
+    //lista todas las personas con paginacion de 1 a 5
+    public function listaPersona($pagina = 1, $size = 5){
+        $cantidad = $size;
+        $inicio = ($pagina) * $cantidad;
+
+        $query = "SELECT ID as id, nombre, apellido, fechanacimiento, dni FROM " . $this->table . " LIMIT $inicio, $cantidad";
         $datos = parent::obtenerDatos($query);
         
         return $datos;
@@ -45,9 +55,8 @@ class persona extends conexion{
             $resp = $this->insertarPersona();
             if($resp){
                 $respuesta = $_respuestas->response;
-                $respuesta["result"] = array(
-                    "personaid" => $resp
-                );
+                $datos['id'] = $resp;
+                $respuesta["result"] = $datos;
                 return $respuesta;
             }else{
                 return $_respuestas->error_500();
@@ -70,13 +79,13 @@ class persona extends conexion{
     }
 
     //para el metodo put
-    public function put($json){
+    public function put($json, $id){
         $_respuestas = new respuestas;
         $datos = json_decode($json,true);
-        if(!isset($datos['ID'])){
+        if(!$id){
             return $_respuestas->error_400();
         }else{
-            $this->personaid = $datos['ID'];
+            $this->personaid = $id;
             if(isset($datos['nombre'])){$this->nombre=$datos['nombre'];}
             if(isset($datos['apellido'])){$this->apellido=$datos['apellido'];}
             if(isset($datos['fechanacimiento'])){$this->fechanacimiento=$datos['fechanacimiento'];}
@@ -111,13 +120,12 @@ class persona extends conexion{
     }
 
     ///para eliminar persona
-    public function delete($json){
+    public function delete($id){
         $_respuestas = new respuestas;
-        $datos = json_decode($json,true);
-        if(!isset($datos['ID'])){
+        if(!$id){
             return $_respuestas->error_400();
         }else{
-            $this->personaid = $datos['ID'];
+            $this->personaid = $id;
             
             $resp = $this->elinimarPersona();
             if($resp){
@@ -133,7 +141,7 @@ class persona extends conexion{
     }
 
     private function elinimarPersona(){
-        $query = "DELETE FROM " . $this->table . " WHERE ID= '" . $this->personaid . "'";
+        $query = "DELETE FROM " . $this->table . " WHERE id= '" . $this->personaid . "'";
         $resp = parent::nonQuery($query);
         if($resp >= 1){
             return $resp;

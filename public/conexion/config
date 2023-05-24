@@ -1,9 +1,9 @@
 {
     "conexion":{
-        "server": "localhost",
+        "server": "mysql",
         "user": "root",
-        "password": "",
-        "database": "personaapi",
+        "password": "12345678",
+        "database": "person",
         "port": "3306"
     }
 }
